@@ -1,0 +1,541 @@
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Scheduling</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> 
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<style>
+
+  .hero {
+      background-color:teal; 
+      color: white;
+      height:600px;
+      position: relative;
+      font-family: Arial, sans-serif;
+      background-image: url('@Url.Content("~/Images/home.jpg")');
+      background-size: cover;
+      background-position: center center; 
+      background-repeat: no-repeat; 
+      
+  }
+  .bottom-text {
+    position: absolute; 
+    bottom: 0; 
+    left: 0; 
+    width: 100%; 
+    text-align: center; 
+    padding: 10px; 
+    color:whitesmoke;
+    text-decoration: solid;
+    font-weight: bold;
+  }
+  button {
+      background-color: teal; 
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      
+  }
+  form {
+      margin-bottom: 20px;
+  }
+  input[type="text"] {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+  }
+  .search{
+    margin:10px;
+    font-weight: bold;
+    
+  }
+  input{
+    border-color: teal;
+    margin:5px;
+  }
+  input[type=text] {
+    width: 25%; 
+   
+    box-sizing: border-box; 
+    border: 2px solid teal; 
+    border-radius: 4px; 
+    outline: none; 
+  }
+
+  .content {
+      display: none;
+    }
+  .custom-card{
+   
+    border:4px solid teal;
+    border-radius: 3%;
+    box-shadow: 0 5px 5px whitesmoke;
+  }
+
+        #availabilityResults {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .time-slots-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .time-slot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            background-color: #f5f5f5; 
+            border-radius: 4px;
+            cursor: pointer; 
+        }
+
+            .time-slot:hover {
+                background-color: #e0e0e0; 
+            }
+
+        .book-btn {
+            background-color: teal;
+            color: #fff;
+            margin-left: 40px;
+            margin-bottom: 5px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .chat-btn {
+            background-color: teal;
+            color: #fff;
+            margin-left: 40px;
+            margin-top:5px;
+            margin-bottom: 5px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .wait-btn {
+            background-color: teal;
+            color: #fff;
+            margin-left: 40px;
+            margin-bottom: 5px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .count
+        {
+           
+            color: teal;
+            cursor: pointer;
+            font-size:12px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+   
+    <section style=" padding-top: 5px;">
+      <div class = "hero">
+        <div class="bottom-text">
+          <h2>Find the Right Doctor & Schedule Appointments Easily</h2>
+          <p>Find perfect cure with over 2000+ Verified Doctors in 180+ Indian cities </p>
+          <button>Find A Doctor</button>
+        </div>
+      </div>
+      <div class="search">
+       
+          <input type="radio" id="option1" name="options" value="option1" onchange="showDiv('option1')"><lable>Search By Doctors</lable>
+          <input type="radio" id="option2" name="options" value="option2" onchange="showDiv('option2')"><label>Search By Speciality & Location</label>
+            <form asp-action="SearchByName" asp-controller="Doctor" method="post">
+                <div id="div1" class="content">
+            
+              <label for="doctor">Name:</label>
+              <input type="text" id="doctor" name="doctor" placeholder="Doctor's Name" required>
+              <button type="submit">SEARCH</button>
+            </div>
+        </form>
+        <form asp-action="SearchBySpecialization" asp-controller = "Doctor" method="post">
+            <div id="div2" class="content">
+            
+              <label for="speciality-location">Speciality:</label>
+              <input type="text" id="speciality-location" name="specialization" placeholder="Speciality" required>
+              <label for="city-state">Near:</label>
+              <input type="text" id="city-state" name="location" placeholder="City, State" required>
+              <button type="submit">SEARCH</button>
+            </div>
+         </form>
+      </div>
+    </section>
+    <section >
+      <div class="benefits">
+        <h2 style="padding-top: 10px;padding-bottom: 25px;">Streamline Your Healthcare with Online Consultations</h2>
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="card custom-card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Find qualified doctors near you</h5>
+                <p class="card-text">Search for doctors based on your location, ensuring convenient access to healthcare professionals. Narrow down your search by specialty
+                  , insurance accepted, patient ratings, and other criteria to find the perfect doctor for your needs.</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+                    <div class="card custom-card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Schedule appointments online in minutes</h5>
+                <p class="card-text">Skip the phone calls and waiting on hold. Our platform allows you to schedule appointments directly with doctors at your chosen time, 24/7. Simply 
+                  select a convenient time slot from the doctor's available schedule and confirm your booking in minutes.</p>
+                
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+                    <div class="card custom-card h-100">
+              <div class="card-body">
+                <h5 class="card-title">Receive appointment reminders and manage bookings</h5>
+                <p class="card-text">Never miss an appointment again! Our platform sends automated 
+                  reminders via email or text message to ensure you're on top of your healthcare
+                   schedule. You can also easily manage your existing bookings online, reschedule appointments if needed, or add yourself to waitlists for in-demand doctors.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="popular-doctors" style="margin: 25px;">
+      <h2>Popular Doctors</h2>
+        <div id ="doctors-container"class="row row-cols-1 row-cols-md-3 g-4">
+           
+        </div>
+      </section>
+    <div id="availabilityModal" class="modal " tabindex="-1" style="display: none;overflow:auto">
+        <div class="modal-dialog modal-dialog-centered ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="availabilityResults" ></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        //search form display
+        function showDiv(option) {
+
+            const divs = document.getElementsByClassName('content');
+            for (let i = 0; i < divs.length; i++) {
+                divs[i].style.display = 'none';
+            }
+
+            document.getElementById('div' + option.charAt(option.length - 1)).style.display = 'block';
+        }
+
+        //display popular doctors
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/Doctor/GetDoctors')
+                .then(response => response.json())
+                .then(doctors => {
+                    console.log(doctors);
+                    if (!Array.isArray(doctors)) {
+                        throw new Error('Response is not an array');
+                    }
+                    const container = document.getElementById('doctors-container');
+                    console.log(doctors.length);
+                    doctors.forEach(doctor => {
+                       
+                        const doctorElement = document.createElement('div');
+                        doctorElement.className = "col";
+                        doctorElement.innerHTML = `
+
+                         <div class="card h-100 " style="max-width: 540px;">
+                            <div class="row g-0">
+                                 <div class="col-md-4 d-flex align-items-center justify-content-center">
+                                                    <img src="${doctor.ImagePath}" class="img-fluid rounded-start h-100" alt="..." style="object-fit: cover;">
+                                 </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                               <h5>${doctor.FirstName} ${doctor.LastName}</h5>
+                                               <p class="card-text">${doctor.Specialization}</p>
+                                                <p class="card-text">${doctor.PhoneNumber}</p>
+                                                <p class="card-text">${doctor.Address}</p>
+                                                <button class="check-availability-btn" data-doctor-email="${doctor.Email}" data-doctor-name="${doctor.FirstName} ${doctor.LastName}">Check Availability</button>
+                                                        <button class="chat-btn" data-name="${doctor.FirstName} ${doctor.LastName}" data-doctor-email="${doctor.Email}">Chat</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                   
+
+                        `;
+                        container.appendChild(doctorElement);
+                    });
+                })
+                .catch(error => console.error('Error fetching doctors:', error));
+        });
+
+        //Convert the json to simplified form
+        function convertToSimplifiedForm(jsonData) {
+          
+           
+            if (!Array.isArray(jsonData)) {
+                console.error("Input data is not an array.");
+                return null;
+            }
+
+            
+            const simplifiedData = [];
+
+           
+            jsonData.forEach(obj => {
+                
+                const date = obj.Date;
+                const timeSlots = obj.TimeSlots.$values.map(slot => ({
+                    AvailabilityId : slot.AvailabilityId,
+                    StartTime: slot.StartTime,
+                    EndTime: slot.EndTime,
+                    AppointmentCount:slot.AppointmentCount
+                }));
+
+                
+                const simplifiedObj = {
+                    Date: date,
+                    TimeSlots: timeSlots
+                };
+
+                
+                simplifiedData.push(simplifiedObj);
+            });
+
+            return simplifiedData;
+        }
+
+        //display availability
+        function displayAvailability(data,email) {
+            availabilityResults.innerHTML = "";
+            let f = 0;
+
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            data = data.filter(day => {
+                const itemDate = new Date(day.Date);
+                itemDate.setHours(0, 0, 0, 0);
+                return itemDate >= today;
+            });
+            data.forEach(day => {
+                f = 1;
+                const dateHeader = document.createElement('h6');
+                dateHeader.textContent = `Date: ${day.Date}`;
+                availabilityResults.appendChild(dateHeader);
+
+                const timeSlotsList = document.createElement('ul');
+                timeSlotsList.classList.add('time-slots-list');
+                availabilityResults.appendChild(timeSlotsList);
+
+                day.TimeSlots.forEach(slot => {
+                    const timeSlot = document.createElement('li');
+                    console.log(slot);
+                    timeSlot.textContent = `${slot.StartTime} - ${slot.EndTime}`;
+                    timeSlotsList.appendChild(timeSlot);
+                    const bookButton = document.createElement('button');
+                  
+                    bookButton.textContent = "Book Appointment";
+                    bookButton.classList.add('book-btn');
+                    bookButton.dataset.availabilityId = `${slot.AvailabilityId}`;
+                    bookButton.dataset.doctorEmail = email ;
+                   
+                    if(slot.AppointmentCount === 0)
+                    {
+                        console.log("0-00");
+                        const p = document.createElement('p');
+                        p.textContent = "All the appointment booked";
+                        p.classList.add('count');
+                        timeSlot.appendChild(p);
+
+                        const waitListButton = document.createElement('button')
+                        waitListButton.textContent = "Add To Wait List";
+                        waitListButton.classList.add('wait-btn');
+                        waitListButton.dataset.availabilityId = `${slot.AvailabilityId}`;
+                        waitListButton.dataset.doctorEmail = email;
+
+                        //timeSlot.appendChild(waitListButton);
+
+
+                    }
+                    else
+                    {
+                        console.log("0-01");
+                        timeSlot.appendChild(bookButton);
+                    }
+                   
+                    timeSlotsList.appendChild(timeSlot);
+                });
+            });
+            if(!f)
+                availabilityResults.innerHTML = "Nothing to show..";
+
+        }
+
+        // JavaScript for handling availability check button click
+        $(document).ready(function () {
+            $(document).on("click", ".check-availability-btn", function () {
+               
+                $("#availabilityModal").modal('show');
+                const email = $(this).data("doctor-email");
+                const title = $(this).data("doctor-name");
+                const modalTitle = document.querySelector('.modal-title');
+                modalTitle.innerHTML = `Dr.${title}'s Availability:`;
+
+                $.ajax({
+                    url: "/Doctor/GetDoctorAvailability",
+                    type: "GET",
+                    data: { email: email },
+                    success: function (response) {
+                        const jsonArray = JSON.parse(response);
+                        console.log(jsonArray);
+                        const data = convertToSimplifiedForm(jsonArray);
+                        displayAvailability(data,email);
+                       
+                        $("#availabilityModal").modal('show');
+                    },
+                    error: function (xhr, status, error) {
+                       
+                    }
+                });
+            });
+
+            $(".close").click(function () {
+                $("#availabilityModal").hide();
+            });
+
+
+
+            $(document).on("click", ".chat-btn", function () {
+
+                
+                const doctor = $(this).data("doctor-email");
+                const name = $(this).data("name");
+                $.ajax({
+                    url: "/Auth/GetLoggedInUser",
+                    type: "GET",
+                    success: function (response) {
+                        const user = JSON.parse(response);
+                        const patient = user.UserName;
+                        const url = `/Chat/Chats?name=${name}&email=${doctor}`;
+                        window.location.href = url;
+
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+                });
+            });
+        });
+   
+        //Book appointment
+        $(document).ready(function () {
+            $(document).on("click", function (event) {
+                if ($(event.target).closest("#availabilityModal").length === 0) {
+                    $("#availabilityModal").modal('hide');
+                }
+            });
+            $(document).on("click", ".book-btn", function () {
+                const availabilityId = $(this).data("availability-id");
+                const doctorEmail = $(this).data("doctor-email");
+
+                $.ajax({
+                    url: '/Patient/BookAppointment',
+                    type: 'POST',
+                    data: {
+                        availabilityId: availabilityId,
+                        doctorEmail: doctorEmail 
+                    },
+                    success: function () {
+                      
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Appointment Booked Successfully!',
+                            html: 'Your appointment has been successfully booked.<br><a href="/Patient/Appointments">Check Your Appointments</a>',
+                            showCloseButton: true,
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error booking appointment:', error);
+                        
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while booking the appointment. Please try again later.',
+                            showCloseButton: true,
+                        });
+                    }
+                });
+            });
+
+            $(document).on("click", ".wait-btn", function () {
+                const availabilityId = $(this).data("availability-id");
+                const doctorEmail = $(this).data("doctor-email");
+
+                $.ajax({
+                    url: '/Patient/AddAppointmentToWait',
+                    type: 'POST',
+                    data: {
+                        availabilityId: availabilityId,
+                        doctorEmail: doctorEmail
+                    },
+                    success: function () {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Appointment Booked Successfully!',
+                            html: 'Your appointment has been added to waiting list , we will notify once appointment get scheduled.<br><a href="/Patient/Appointments">Check Your Appointments</a>',
+                            showCloseButton: true,
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error booking appointment:', error);
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while booking the appointment. Please try again later.',
+                            showCloseButton: true,
+                        });
+                    }
+                });
+            });
+
+        });
+
+    </script>
+</body>
+</html>

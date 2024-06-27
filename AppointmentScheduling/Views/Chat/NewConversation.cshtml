@@ -1,0 +1,32 @@
+﻿@model List<Services.ServiceModels.ChatsDTO>
+
+<div id="newChats" class="modal " tabindex="-1" style="overflow:auto">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if (Model.Count > 0)
+                {
+                    <ul class="new-chat-list">
+                        @foreach (var user in Model)
+                        {
+                            <li data-receiver-id="@user.Email" data-name="@user.Name" data-image="@user.ImagePath">@user.Name</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>No chats.</p>
+                }
+
+            
+        </div>
+    </div>
+</div>
+</div>
+<script>
+
+</script>

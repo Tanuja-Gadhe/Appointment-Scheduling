@@ -1,0 +1,50 @@
+﻿@model Services.ServiceModels.ChatRoomModel
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Scheduling</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
+</head>
+<body>
+    <div id="messagesList" class="temp "></div>
+    <div class="input-area">
+        <input type="text" id="messageInput" placeholder="Type a message..." />
+        <button id="sendButton" >Send</button>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
+    <script type="text/javascript">
+        const chatRoomId = "@Model.ChatRoomId";
+        const senderId = "@Model.SenderId";
+        const receiverId = "@Model.ReceiverId";
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chathub?chatRoomId=" + chatRoomId)
+            .build();
+
+        connection.on("ReceiveMessage", (message) => {
+            const msg = document.createElement("div");
+            msg.textContent = `${message.content}`;
+            console.log(message.senderId);
+            msg.classList.add("message",message.senderId == senderId?"sent":"received");
+            document.getElementById("messagesList").appendChild(msg);
+            msg.scrollIntoView({ behavior: "smooth" });
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+
+        document.getElementById("sendButton").addEventListener("click", event => {
+            console.log("i am here , ok");
+            const message = document.getElementById("messageInput").value;
+            console.log(message);
+            connection.invoke("SendMessage", chatRoomId, senderId, receiverId, message)
+                .catch(err => console.error(err.toString()));
+            event.preventDefault();
+            clearMessageInput();
+        });
+    </script>
+</body>
+</html>

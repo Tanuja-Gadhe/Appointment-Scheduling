@@ -1,0 +1,41 @@
+﻿@model Services.ServiceModels.ProfileDTO
+
+
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Scheduling</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="@Url.Content("~/css/profile.css")" rel="stylesheet">
+</head>
+<body>
+
+   
+
+    <div class="card">
+        <div class="card-img-top">
+        </div>
+        <div class="profile-div">
+            <img src="@Model.ImagePath" class="profile-pic" alt="Profile Picture">
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">@Model.UserName</h5>
+            <p class="card-text">Name: @Model.FirstName  @Model.LastName</p>
+            <p class="card-text">Phone Number: @Model.PhoneNumber</p>
+            <p class="card-text">Email: @Model.Email</p>
+            <p class="card-text">Address: @Model.Address</p>
+           <hr style="background:black;"/>
+            <em><a href="/Auth/EditProfile?username=@Model.UserName" style="font-size:20px;color:teal">Edit</a></em>
+        </div>
+    </div>
+</body>
+</html>

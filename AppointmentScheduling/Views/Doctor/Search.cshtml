@@ -1,0 +1,290 @@
+﻿@model List<Services.ServiceModels.SearchModel>
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Scheduling</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shCjCk5z8O3bqFeh12Xv1t4+1p4flfl5Gw5+q" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="@Url.Content("~/css/search-style.css")" >
+    <style>
+        #availabilityResults {
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .time-slots-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .time-slot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+            .time-slot:hover {
+                background-color: #e0e0e0;
+            }
+
+        .book-btn {
+            background-color: teal;
+            color: #fff;
+            margin-left: 40px;
+            margin-bottom: 5px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+  
+
+    <section class="search-section">
+      @if(TempData["SearchType"] == "name")
+        {
+            <div class="search-container">
+                <div class="search-bar">
+                    <form asp-action="SearchByName" asp-controller="Doctor" method="post">
+                        <div id="div1" class="content">
+                            <input type="text" id="doctor" name="doctor" placeholder="Doctor's Name" style="width:500px;" required>
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="search-container">
+                <div class="search-bar">
+                    <form asp-action="SearchBySpecialization" asp-controller="Doctor" method="post">
+                        <div id="div2" class="content">
+
+                            <label for="speciality-location">Speciality:</label>
+                            <input type="text" id="speciality-location" name="specialization" placeholder="Speciality" required>
+                            <label for="city-state">Near:</label>
+                            <input type="text" id="city-state" name="location" placeholder="City, State" required>
+                            <button type="submit"><i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        }
+        <div class="search-results">
+            <div class="results-header">
+                <h3>Search Results for: @TempData["SearchParameter"]</h3>
+                <p><span class="match-count">@Model.Count</span> matches found</p>
+            </div>
+            <section class="container">
+
+                @if (Model.Count > 0)
+                {
+                    <div class="doctor-container">
+                        @foreach (var doctor in Model)
+                        {
+                            <div class="doctor-card">
+                                <div class="doctor-avatar"><img src="@doctor.UserImage" style="height:80px;width:80px;border-radius:50%" /></div>
+                                <div class="doctor-info">
+                                    <h3 class="doctor-name">@doctor.FirstName @doctor.LastName</h3>
+                                    <p class="doctor-degree">@doctor.Degree</p>
+
+                                    <p class="doctor-specialty"><i class="fas fa-notes-medical"></i> @doctor.Specialization</p>
+                                    <div class="doctor-details">
+                                        <p class="doctor-location"><i class="fas fa-phone"></i>@doctor.PhoneNumber</p>
+                                        <p class="doctor-location"><i class="fas fa-envelope"></i> @doctor.Email</p>
+                                        <p class="doctor-location"><i class="fas fa-map-marker-alt"></i> @doctor.Address</p>
+                                        <button class="check-availability-btn" data-doctor-email="@doctor.Email" data-doctor-name="@doctor.FirstName @doctor.LastName">Check Availability</button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p>No results found.</p>
+                }
+            </section>
+        </div>
+    </section>
+     <div id="availabilityModal" class="modal " tabindex="-1" style="display: none;overflow:auto">
+        <div class="modal-dialog modal-dialog-centered ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="availabilityResults" ></div>
+                </div>
+            </div>
+        </div>
+    </div>
+   <script>
+
+        //Convert the json to simplified form
+        function convertToSimplifiedForm(jsonData) {
+
+
+            if (!Array.isArray(jsonData)) {
+                console.error("Input data is not an array.");
+                return null;
+            }
+
+
+            const simplifiedData = [];
+
+
+            jsonData.forEach(obj => {
+
+                const date = obj.Date;
+                const timeSlots = obj.TimeSlots.$values.map(slot => ({
+                    AvailabilityId: slot.AvailabilityId,
+                    StartTime: slot.StartTime,
+                    EndTime: slot.EndTime
+                }));
+
+
+                const simplifiedObj = {
+                    Date: date,
+                    TimeSlots: timeSlots
+                };
+
+
+                simplifiedData.push(simplifiedObj);
+            });
+
+            return simplifiedData;
+        }
+
+        //display availability
+        function displayAvailability(data, email) {
+            availabilityResults.innerHTML = "";
+            let f = 0;
+            data.forEach(day => {
+                f = 1;
+                const dateHeader = document.createElement('h6');
+                dateHeader.textContent = `Date: ${day.Date}`;
+                availabilityResults.appendChild(dateHeader);
+
+                const timeSlotsList = document.createElement('ul');
+                timeSlotsList.classList.add('time-slots-list');
+                availabilityResults.appendChild(timeSlotsList);
+
+                day.TimeSlots.forEach(slot => {
+                    const timeSlot = document.createElement('li');
+                    console.log(slot);
+                    timeSlot.textContent = `${slot.StartTime} - ${slot.EndTime}`;
+                    timeSlotsList.appendChild(timeSlot);
+                    const bookButton = document.createElement('button');
+                    bookButton.textContent = "Book Appointment";
+                    bookButton.dataset.availabilityId = `${slot.AvailabilityId}`;
+                    bookButton.dataset.doctorEmail = email;
+                    bookButton.classList.add('book-btn');
+                    timeSlot.appendChild(bookButton);
+                    timeSlotsList.appendChild(timeSlot);
+                });
+            });
+            if (!f)
+                availabilityResults.innerHTML = "Nothing to show..";
+        }
+
+        // JavaScript for handling availability check button click
+        $(document).ready(function () {
+            $(document).on("click", ".check-availability-btn", function () {
+
+                $("#availabilityModal").modal('show');
+                const email = $(this).data("doctor-email");
+                console.log(email);
+                const title = $(this).data("doctor-name");
+                const modalTitle = document.querySelector('.modal-title');
+                modalTitle.innerHTML = `Dr.${title}'s Availability:`;
+
+                $.ajax({
+                    url: "/Doctor/GetDoctorAvailability",
+                    type: "GET",
+                    data: { email: email },
+                    success: function (response) {
+                        const jsonArray = JSON.parse(response);
+                        console.log(jsonArray);
+                        const data = convertToSimplifiedForm(jsonArray);
+                        displayAvailability(data, email);
+
+                        $("#availabilityModal").modal('show');
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+                });
+            });
+
+            $(".close").click(function () {
+                $("#availabilityModal").hide();
+            });
+        });
+
+        $(document).ready(function () {
+            $(document).on("click", function (event) {
+                if ($(event.target).closest("#availabilityModal").length === 0) {
+                    $("#availabilityModal").modal('hide');
+                }
+            });
+            $(document).on("click", ".book-btn", function () {
+                const availabilityId = $(this).data("availability-id");
+                const doctorEmail = $(this).data("doctor-email");
+
+                $.ajax({
+                    url: '/Patient/BookAppointment',
+                    type: 'POST',
+                    data: {
+                        availabilityId: availabilityId,
+                        doctorEmail: doctorEmail
+                    },
+                    success: function () {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Appointment Booked Successfully!',
+                            html: 'Your appointment has been successfully booked.<br><a href="/Patient/Appointments">Check Your Appointments</a>',
+                            showCloseButton: true,
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error booking appointment:', error);
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while booking the appointment. Please try again later.',
+                            showCloseButton: true,
+                        });
+                    }
+                });
+            });
+
+        });
+
+   </script>
+</body>
+</html>

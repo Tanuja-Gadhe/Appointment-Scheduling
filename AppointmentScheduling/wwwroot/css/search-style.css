@@ -1,0 +1,142 @@
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css');
+
+
+.search-section {
+    margin-top:20px;
+    height:auto;
+    padding: 2rem;
+    background-color: #f8f8f8;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.search-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    height: auto;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+}
+
+    .search-bar:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-bar input {
+        border: none;
+        outline: none;
+        background-color: transparent;
+        padding: 0.5rem;
+        flex: 1;
+        font-size: 1rem;
+        color: #333;
+    }
+
+    .search-bar button {
+        background-color:teal;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 0.5rem 1rem;
+        color: #fff;
+        border-radius: 20px;
+        transition: background-color 0.3s ease;
+    }
+
+        .search-bar button:hover {
+            background-color: rgb(6, 63, 63);
+        }
+
+.search-results {
+    margin-top: 2rem;
+}
+
+.results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    color: teal;
+}
+
+.match-count {
+    font-weight: bold;
+    color: teal;
+}
+
+.doctor-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.doctor-card {
+    display: flex;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px 10px 10px 80px;
+    padding: 20px;
+    width: 750px;
+   
+
+}
+
+
+.doctor-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #ccc;
+    margin-right: 20px;
+}
+
+.doctor-info {
+    flex: 1;
+}
+
+.doctor-name {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.doctor-degree {
+    margin-bottom: 5px;
+}
+
+.doctor-specialty {
+    color: #555;
+    margin-bottom: 10px;
+}
+
+    .doctor-specialty i {
+        margin-right: 5px;
+    }
+
+.doctor-details {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.doctor-location,
+.doctor-award {
+    color: #777;
+    margin-right: 10px;
+}
+
+    .doctor-location i,
+    .doctor-award i {
+        margin-right: 5px;
+    }
+
+
+
+            

@@ -1,0 +1,91 @@
+﻿@model List<Services.ServiceModels.PatientDTO>
+
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+   
+    <style>
+        
+        h2 {
+            color: teal;
+        }
+        .cont
+        {
+            overflow:auto;
+        }
+        .table {
+           
+           margin:20px auto;
+            width: 90%;
+            border-collapse: collapse;
+        }
+
+            .table th, .table td {
+                padding-top: 20px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .table th {
+                background-color: #f2f2f2;
+            }
+
+            
+            .table input[type="text"], .table button {
+                height: 38px;
+                margin: 0;
+            }
+
+        .image {
+            height: 100px;
+            width: 100px;
+            border-radius: 50%;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="cont">
+        <h2>Patients</h2>
+        <hr />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Image</th>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Contact Number</th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count(); i++)
+                {
+                    var user = Model.ElementAt(i);
+                    <tr>
+                        <td>@(i + 1)</td>
+                        <td><img class="image" src="@user.ImagePath" /></td>
+                        <td>@user.Username</td>
+                        <td>@user.FirstName @user.LastName</td>
+                        <td>@user.Email</td>
+                        <td>@user.Address</td>
+                        <td>@user.Phone</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <script>
+       
+    </script>
+</body>
+</html>
+
+

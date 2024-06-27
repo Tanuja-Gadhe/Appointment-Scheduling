@@ -1,0 +1,833 @@
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Scheduling</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shCjCk5z8O3bqFeh12Xv1t4+1p4flfl5Gw5+q" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="@Url.Content("~/css/doctor-styles.css")" rel="stylesheet">
+    <style>
+        .view {
+            border: none;
+            background-color: rgba(255,255,255,0.0);
+            float: right;
+            padding-left: 40px;
+        }
+
+        .appointment-status {
+           
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+
+        .status-scheduled {
+            color: #30AACC;
+            
+        }
+
+        .status-cancelled {
+          
+            color: #F00;
+            
+        }
+
+        .status-completed {
+            color: #90EE90;
+            
+        }
+
+        .li-appointment
+        {
+           align-content:left;
+           font-size:20px;
+           margin:4px;
+           padding:4px;
+           border-bottom : 3px solid grey;
+        }
+
+        .appointment-container {
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+
+        .appointment-header {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+
+        .appointment-details {
+            margin-bottom: 10px;
+        }
+
+
+        .patient-details {
+            margin-bottom: 10px;
+        }
+
+
+        .doctor-details {
+            margin-bottom: 10px;
+        }
+
+
+        .notes-section {
+            margin-bottom: 10px;
+        }
+
+
+        .button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-left: 4px;
+        }
+
+
+        .doctor-header {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .details-container {
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+
+        .details-header {
+            font-size: 20px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+
+        .detail-item {
+            margin-bottom: 5px;
+        }
+
+
+        .name {
+            font-weight: bold;
+        }
+
+
+        .contact-info {
+            font-style: italic;
+        }
+
+
+        .address {
+            font-size: 14px;
+        }
+
+        .day-header{
+            font-size: 40px;
+            margin: 1px;
+        }
+
+        .day{
+            font-size: 20px;
+            margin: 1px;
+        }
+
+        .day-appointments
+        {
+            font-size: 10px;
+            margin: 1px;
+        }
+    </style>
+</head>
+<body>
+  
+    <div class="container">
+        <div class="greetings">
+            <div class="card" style="margin-top:100px;">
+                <h1>Welcome! Dr. <span id="name"></span></h1>
+                <p>Have a nice day at work</p>
+            </div>
+        </div>
+        <div class="weekly-reports">
+            <h3>Weekly Reports</h3>
+            <div class="total-appointments">
+                <div class="card">
+                    <img class="weekly-item default" src="@Url.Content("~/Images/appointment.jpg")">
+                    <p>Total Appointments</p>
+                    <p style="font-size: larger;font-weight: bold;" id="total-appointments"></p>
+                </div>
+            </div>
+            <div class="appointments-breakdown card">
+                <div class="scheduled inline-container"><img class="appointments-breakdown-item" src="@Url.Content("~/Images/scheduled.jpg")"><p>Scheduled <span id="scheduled"></span></p></div>
+                <div class="cancelled inline-container"><img class="appointments-breakdown-item" src="@Url.Content("~/Images/cancelled.jpg")"><p>Cancelled  <span id="cancelled"></span></p></div>
+                <div class="completed inline-container"><img class="appointments-breakdown-item" src="@Url.Content("~/Images/completed.jpg")"><p>Completed  <span id="completed"></span></p></div>
+            </div>
+            <div class="total-patients">
+                <div class="card">
+                    <img class="weekly-item" src="@Url.Content("~/Images/patient.jpg")">
+                    <p>Total Patients</p>
+                    <p style="font-size: larger;font-weight: bold;" id="total-patients"></p>
+                </div>
+            </div>
+        </div>
+        <div class="todays-appointments card">
+            <h3>Today's Appointments</h3>
+            <ul id="todaysAppointments">
+
+            </ul>
+        </div>
+
+        <div class="weekly-scedule">
+
+            <div class="weekly-availability-schedule">
+                <div class="heading">
+                    <h3 style="padding-top: 30px;">Weekly Availability Schedule</h3>
+                </div>
+                <div class="monday card" id="0">
+                   
+                </div>
+                <div class="tuesday card" id="1">
+                    
+                </div>
+                <div class="wed card" id="2">
+                  
+                </div>
+                <div class="thurs card" id="3">
+                   
+                </div>
+                <div class="fri card" id="4">
+                   
+
+                </div>
+                <div class="sat card" id="5">
+                   
+                </div>
+            </div>
+
+            <div class="todays-availability-breakdown ">
+                <div class="card">
+                    <h3>Today's Appointments Breakdown</h3>
+                    <table id="slotTable">
+  
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="appointmentDetailsModal" class="modal " tabindex="-1" style="display: none;overflow:auto">
+        <div class="modal-dialog modal-dialog-centered ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"></h5>
+                    <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="appointmentDetails"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+       
+        function displayWeeklyBreakdown(appointments) {
+            const days = ["Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"];
+            let currentDate=new Date();
+            
+            for (let id = 0; id < 6; id++) {
+                if (id < appointments.length) {
+                    const container = document.getElementById(id);
+                    container.innerHTML = "";
+                    const header = document.createElement('h5');
+                    header.classList.add('day-header');
+                    const date = new Date(appointments[id].DateTime);
+                    currentDate=date;
+                    header.textContent = date.getDate();
+
+                    const day = document.createElement('p');
+                    day.classList.add('day');
+                    day.textContent = days[date.getDay()];
+
+
+                    const statuses = appointments[id].Statuses.$values;
+                    const total = statuses.length;
+                    const scheduled = statuses.filter((status) => status === "scheduled").length;
+                    const completed = statuses.filter((status) => status === "completed").length;
+                    const cancelled = statuses.filter((status) => status === "cancelled").length;
+
+
+                    const totalP = document.createElement('p');
+                    totalP.classList.add('day-appointments');
+                    totalP.textContent = `Total : ${total}`;
+
+
+                    const scheduledP = document.createElement('p');
+                    scheduledP.classList.add('day-appointments');
+                    scheduledP.textContent = `Scheduled : ${scheduled}`;
+
+                    const cancelledP = document.createElement('p');
+                    cancelledP.classList.add('day-appointments');
+                    cancelledP.textContent = `Cancelled : ${cancelled}`;
+
+                    const completedP = document.createElement('p');
+                    completedP.classList.add('day-appointments');
+                    completedP.textContent = `Completed : ${completed}`;
+                    
+                    
+                    container.appendChild(header);
+                    container.appendChild(day);
+                    
+                    container.appendChild(scheduledP);
+                    container.appendChild(cancelledP);
+                    container.appendChild(completedP);
+                   // container.appendChild(totalP);
+
+                }
+                else{
+                    console.log("hiii");
+                    const container = document.getElementById(id);
+                    container.innerHTML = "";
+
+                    let date = new Date(currentDate);
+                    date.setDate(currentDate.getDate() + 1);
+
+                    const header = document.createElement('h5');
+                    header.classList.add('day-header')
+                    currentDate = date;
+                    header.textContent = date.getDate();
+
+                    const day = document.createElement('p');
+                    day.classList.add('day');
+                    day.textContent = days[date.getDay()];
+
+                    const totalP = document.createElement('p');
+                    totalP.classList.add('day-appointments');
+                    totalP.textContent = `Total : 0`;
+
+
+                    const scheduledP = document.createElement('p');
+                    scheduledP.classList.add('day-appointments');
+                    scheduledP.textContent = `Scheduled : 0`;
+
+                    const cancelledP = document.createElement('p');
+                    cancelledP.classList.add('day-appointments');
+                    cancelledP.textContent = `Cancelled : 0`;
+
+                    const completedP = document.createElement('p');
+                    completedP.classList.add('day-appointments');
+                    completedP.textContent = `Completed : 0`;
+
+                    container.appendChild(header);
+                    container.appendChild(day);
+
+                    container.appendChild(scheduledP);
+                    container.appendChild(cancelledP);
+                    container.appendChild(completedP);
+                   //container.appendChild(totalP);
+
+                }
+            }
+        }
+        function displayTodaysBreakdown(results)
+        {
+            slotTable.innerHTML = "";
+
+            const headerRow = document.createElement('tr');
+
+            const header1 = document.createElement('th');
+            header1.textContent = `Slot`;
+
+            const header2 = document.createElement('th');
+            header2.textContent = `Scheduled`;
+
+            const header3 = document.createElement('th');
+            header3.textContent = `Cancelled`;
+
+            const header4 = document.createElement('th');
+            header4.textContent = `Completed`;
+
+            const header5 = document.createElement('th');
+            header5.textContent = `Total`;
+
+            headerRow.appendChild(header1);
+            headerRow.appendChild(header2);
+            headerRow.appendChild(header3);
+            headerRow.appendChild(header4);
+            headerRow.appendChild(header5);
+
+            slotTable.appendChild(headerRow);
+            console.log("helllooo");
+            console.log(results);
+            results.forEach(slot => {
+                const row = document.createElement('tr');
+
+                const data1 = document.createElement('td');
+                const endTime = slot.EndTimeAndStatus.$values[0];
+               
+                data1.textContent = `${slot.StartTime}-${endTime.EndTime}`;
+               
+                const statuses = slot.EndTimeAndStatus.$values;
+               
+                const scheduled = statuses.filter((status) => status.Status === "scheduled").length;
+                const completed = statuses.filter((status) => status.Status === "completed").length;
+                const cancelled = statuses.filter((status) => status.Status === "cancelled").length;
+                const total = scheduled + completed + cancelled;
+                const data2 = document.createElement('td');
+                data2.textContent = `${scheduled}`;
+
+                const data3 = document.createElement('td');
+                data3.textContent = `${cancelled}`;
+
+                const data4 = document.createElement('td');
+                data4.textContent = `${completed}`;
+
+                const data5 = document.createElement('td');
+                data5.textContent = `${total}`;
+
+                row.appendChild(data1);
+                row.appendChild(data2);
+                row.appendChild(data3);
+                row.appendChild(data4);
+                row.appendChild(data5);
+
+                slotTable.appendChild(row);
+
+            });
+                
+        }
+
+        function displayAppointmentDetails(appointment, role) {
+            appointmentDetails.innerHTML = "";
+
+            const appointmentDate = new Date(appointment.AppointmentDateTime);
+            console.log(appointmentDate.getDate());
+
+            //appointment header
+            const appointmentDiv = document.createElement('div');
+            const appointmentHeader = document.createElement('h6');
+            appointmentHeader.textContent = `Date and Time : ${appointmentDate.getDate()}-${appointmentDate.getMonth() + 1}-${appointmentDate.getFullYear()} - ${appointmentDate.getHours()}:${appointmentDate.getMinutes()}`;
+            if (appointmentDate.getMinutes() === 0) {
+                appointmentHeader.textContent += "0";
+            }
+            appointmentDiv.appendChild(appointmentHeader);
+
+
+            const status = document.createElement('h6');
+            status.textContent = `Status : ${appointment.Status}`;
+            appointmentDiv.appendChild(status);
+
+            const notesHeader = document.createElement('h6');
+            notesHeader.textContent = "Notes : ";
+            const notes = document.createElement('p');
+            if (appointment.Notes === "") {
+                notes.textContent = `no notes added`;
+            }
+            else {
+                notes.textContent = appointment.Notes;
+            }
+            notes.id = "notes";
+            const notesText = document.createElement('textarea');
+            notesText.ariaPlaceholder = "write you notes..";
+            notesText.id = "notes-text";
+
+            const addNotesButton = document.createElement('button');
+            addNotesButton.textContent = "Add Notes";
+            addNotesButton.dataset.appointmentId = `${appointment.AppointmentId}`;
+
+            notesHeader.appendChild(notes);
+            notesHeader.appendChild(notesText);
+            notesHeader.appendChild(addNotesButton);
+
+            appointmentDiv.appendChild(notesHeader);
+
+            appointmentDetails.appendChild(appointmentDiv);
+
+            //Patient Header
+            const patientDiv = document.createElement('div');
+
+            const patientHeader = document.createElement('h6');
+            patientHeader.textContent = "Patient Details : ";
+            patientDiv.appendChild(patientHeader);
+
+            console.log(appointment.PatientName);
+            const name = document.createElement('h6');
+            name.textContent = `Name : ${appointment.PatientName}`;
+            patientDiv.appendChild(name);
+
+            const phoneNumber = document.createElement('h6');
+            phoneNumber.textContent = `Phone Number : ${appointment.PatientPhoneNumber}`;
+            patientDiv.appendChild(phoneNumber);
+
+            const email = document.createElement('h6');
+            email.textContent = `Email : ${appointment.PatientEmail}`;
+            patientDiv.appendChild(email);
+
+            const address = document.createElement('h6');
+            address.textContent = `Address : ${appointment.PatientAddress}`;
+            patientDiv.appendChild(address);
+            appointmentDetails.appendChild(patientDiv);
+
+            // Doctor Header
+            const doctorDiv = document.createElement('h6');
+
+            const doctorHeader = document.createElement('h6');
+            doctorHeader.textContent = "Doctor's Details:";
+            doctorDiv.appendChild(doctorHeader);
+
+
+            const doctorName = document.createElement('h6');
+            doctorName.textContent = `Name : ${appointment.DoctorsDetail.FirstName} ${appointment.DoctorsDetail.LastName}`;
+            doctorDiv.appendChild(doctorName);
+
+            const doctorSpecialization = document.createElement('h6');
+            doctorSpecialization.textContent = `Specialiaztion : ${appointment.DoctorsDetail.Specialization}`;
+            doctorDiv.appendChild(doctorSpecialization);
+
+            const doctorPhoneNumber = document.createElement('h6');
+            doctorPhoneNumber.textContent = `Phone Number : ${appointment.DoctorsDetail.PhoneNumber}`;
+            doctorDiv.appendChild(doctorPhoneNumber);
+
+            const doctorEmail = document.createElement('h6');
+            doctorEmail.textContent = `Email : ${appointment.DoctorsDetail.Email}`;
+            doctorDiv.appendChild(doctorEmail);
+
+            const doctorAddress = document.createElement('h6');
+            doctorAddress.textContent = `Address : ${appointment.DoctorsDetail.Address}`;
+            doctorDiv.appendChild(doctorAddress);
+
+            appointmentDetails.appendChild(doctorDiv);
+
+            if (appointment.Status === "scheduled") {
+                const cancelAppointmentButton = document.createElement('button');
+                cancelAppointmentButton.textContent = "Cancel Appointment";
+                cancelAppointmentButton.dataset.appointmentId = `${appointment.AppointmentId}`;
+                appointmentDetails.appendChild(cancelAppointmentButton);
+                cancelAppointmentButton.classList.add('button', 'cancel-appointment');
+            }
+            if (role === "doctor" && appointment.Status === "scheduled") {
+                const completeAppointmentButton = document.createElement('button');
+                completeAppointmentButton.textContent = "Complete Appointment";
+                completeAppointmentButton.dataset.appointmentId = `${appointment.AppointmentId}`;
+                appointmentDetails.appendChild(completeAppointmentButton);
+                completeAppointmentButton.classList.add('button', 'complete-appointment');
+            }
+
+            // For Appointment details
+            appointmentDiv.classList.add('appointment-container');
+            appointmentHeader.classList.add('appointment-header');
+            patientDiv.classList.add('patient-details');
+            doctorDiv.classList.add('doctor-details');
+            notesHeader.classList.add('notes-section');
+            addNotesButton.classList.add('button', 'add-notes');
+            doctorHeader.classList.add('doctor-header');
+
+            // For patient details
+            patientDiv.classList.add('details-container');
+            patientHeader.classList.add('details-header');
+            name.classList.add('detail-item', 'name');
+            phoneNumber.classList.add('detail-item', 'contact-info');
+            email.classList.add('detail-item', 'contact-info');
+            address.classList.add('detail-item', 'address');
+
+            // For doctor details
+            doctorDiv.classList.add('details-container');
+            doctorHeader.classList.add('details-header');
+            doctorName.classList.add('detail-item', 'name');
+            doctorSpecialization.classList.add('detail-item');
+            doctorPhoneNumber.classList.add('detail-item', 'contact-info');
+            doctorEmail.classList.add('detail-item', 'contact-info');
+            doctorAddress.classList.add('detail-item', 'address');
+
+
+        }
+
+        function displayTodaysAppointments(appointments){
+
+            todaysAppointments.innerHTML = "";
+
+            appointments.forEach(appointment => {
+                const appointmentDate = new Date(appointment.AppointmentsDateTime);
+                const li = document.createElement('li');
+
+                const formattedDate = `${appointmentDate.getDate().toString().padStart(2, '0')}-${(appointmentDate.getMonth() + 1).toString().padStart(2, '0')}-${appointmentDate.getFullYear()}`;
+                const formattedTime = `${appointmentDate.getHours()}:${appointmentDate.getMinutes().toString().padStart(2, '0')}`;
+
+                li.textContent = `${formattedDate} - ${formattedTime} with ${appointment.Name} `;
+
+                
+                const statusIndicator = document.createElement('span');
+                statusIndicator.classList.add('appointment-status');
+
+                let statusText;
+                switch (appointment.Status) {
+                    case 'scheduled':
+                        statusText = 'Scheduled';
+                        statusIndicator.classList.add('status-scheduled'); 
+                        break;
+                    case 'cancelled':
+                        statusText = 'Cancelled';
+                        statusIndicator.classList.add('status-cancelled'); 
+                        break;
+                    case 'completed':
+                        statusText = 'Completed';
+                        statusIndicator.classList.add('status-completed'); 
+                        break;
+                    default:
+                        statusText = 'Unknown'; 
+                        break;
+                }
+
+                statusIndicator.textContent = statusText;
+                li.appendChild(statusIndicator);
+
+                const button = document.createElement('button');
+                button.dataset.appointmentId = appointment.AppointmentId;
+
+                const eye = document.createElement('i');
+                eye.classList.add('bi', 'bi-eye-fill');
+                button.classList.add('view');
+
+                button.appendChild(eye);
+                li.appendChild(button);
+                li.classList.add('li-appointment');
+                todaysAppointments.appendChild(li);
+            });
+
+        }
+
+        $(document).ready(function () {
+            let userRole = "";
+            let username = "";
+            $.ajax({
+                url: '/Auth/GetLoggedInUser',
+                type: 'GET',
+                success: function (data) {
+
+                    const loggedUser = JSON.parse(data);
+                    userRole = loggedUser.Role;
+                    username = loggedUser.UserName;
+                    $('#name').text(loggedUser.Name);
+                   
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error('Error occurred while retrieving logged-in user:', errorThrown);
+                }
+            });
+
+            $.ajax({
+                url: '/Doctor/GetAppointmentsForWeek',
+                type: 'GET',
+                success: function (data) {
+                   
+                    const appointments = JSON.parse(data);
+                    console.log("hii");
+                    console.log(appointments);
+
+                    $('#total-appointments').text(appointments.length);
+
+                    const scheduled = appointments.filter((appointment) => appointment.Status === "scheduled").length;
+                    const completed = appointments.filter((appointment) => appointment.Status === "completed").length;
+                    const cancelled = appointments.filter((appointment) => appointment.Status === "cancelled").length;
+
+                    $('#scheduled').text(scheduled);
+                    $('#cancelled').text(cancelled);
+                    $('#completed').text(completed);
+
+                    const totalPatients = appointments.filter((appointment, index, self) =>
+                        index === self.findIndex((t) => (
+                            t.PatientId === appointment.PatientId
+                        ))
+                    ).length;
+
+                    $('#total-patients').text(totalPatients);
+
+
+                    const today = new Date();
+                    const todayDatePart = today.toISOString().slice(0, 10);
+                  
+                    const todaysAppointments = appointments.filter(appointment => {
+                        const date = new Date(appointment.AppointmentsDateTime);
+                        return date.toISOString().slice(0, 10) === todayDatePart ? true : false;
+                    });
+                    displayTodaysAppointments(todaysAppointments);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error('Error occurred while retrieving appointments:', errorThrown);
+                }
+            });
+
+            $.ajax({
+                url:'/Doctor/GetTodaysAvailabilityAndAppointments',
+                type:'GET',
+                success: function (response) {
+                    const results = JSON.parse(response);
+                    console.log(results);
+                    displayTodaysBreakdown(results);
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error('Error occurred while retrieving availability and appointments:', errorThrown);
+                }
+            });
+
+            $.ajax({
+                url:'/Doctor/GetWeeklyBreakdown',
+                type:'GET',
+                success:function(response){
+                    const result = JSON.parse(response);
+                    console.log(result);
+                    displayWeeklyBreakdown(result);
+                },
+                error:{
+
+                }
+            });
+           
+            $(document).on("click", ".view", function () {
+
+                $("#appointmentDetailsModal").modal('show');
+                const appointmentId = $(this).data("appointment-id");
+                const modalTitle = document.querySelector('.modal-title');
+                modalTitle.innerHTML = "Appointment Details :";
+
+                $.ajax({
+                    url: "/Patient/ViewAppointment",
+                    type: "GET",
+                    data: { appointmentId: appointmentId },
+                    success: function (response) {
+                        const appointment = JSON.parse(response);
+                        console.log(appointment);
+                        displayAppointmentDetails(appointment, userRole);
+                        $("#appointmentDetailsModal").modal('show');
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+                });
+            });
+            $(document).on("click", ".add-notes", function () {
+                const appointmentId = $(this).data("appointment-id");
+                const notes = document.getElementById('notes-text').value;
+                $.ajax({
+                    url: '/Patient/AddAppointmentNotes',
+                    type: 'PUT',
+                    data: {
+                        appointmentId: appointmentId,
+                        notes: notes
+                    },
+                    success: function (response) {
+
+                        document.getElementById('notes').textContent = response;
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error adding Notes:', error);
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while adding notes to  the appointment. Please try again later.',
+                            showCloseButton: true,
+                        });
+                    }
+                });
+            });
+
+            //Cancel
+            $(document).on("click", ".cancel-appointment", function () {
+                const appointmentId = $(this).data("appointment-id");
+
+
+                $.ajax({
+                    url: '/Patient/CancelAppointment',
+                    type: 'PUT',
+                    data: {
+                        appointmentId: appointmentId
+                    },
+                    success: function () {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Appointment Cancelled!',
+                            html: 'Your appointment has been cancelled successfully.<br><a href="/Patient/Appointments">Check Your Appointments</a>',
+                            showCloseButton: true,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload(true);
+                            } else if (result.dismiss === Swal.DismissReason.close) {
+                                location.reload(true);
+                            }
+                        });;
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error booking appointment:', error);
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while cancelling the appointment. Please try again later.',
+                            showCloseButton: true,
+                        });
+                    }
+                });
+            });
+
+
+            //Complete
+            $(document).on("click", ".complete-appointment", function () {
+                const appointmentId = $(this).data("appointment-id");
+
+
+                $.ajax({
+                    url: '/Patient/CompleteAppointment',
+                    type: 'PUT',
+                    data: {
+                        appointmentId: appointmentId
+                    },
+                    success: function () {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Appointment Completed!',
+                            html: ' Appointment has been completed successfully.<br><a href="/Patient/Appointments">Check Your Appointments</a>',
+                            showCloseButton: true,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload(true);
+                            } else if (result.dismiss === Swal.DismissReason.close) {
+                                location.reload(true);
+                            }
+                        });;
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error booking appointment:', error);
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while cancelling the appointment. Please try again later.',
+                            showCloseButton: true,
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+

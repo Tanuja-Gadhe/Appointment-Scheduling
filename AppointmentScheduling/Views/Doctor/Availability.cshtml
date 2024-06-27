@@ -1,0 +1,243 @@
+﻿@model Services.ServiceModels.AvailabilityDTO
+
+
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Scheduling</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shCjCk5z8O3bqFeh12Xv1t4+1p4flfl5Gw5+q" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="@Url.Content("~/css/doctor-styles.css")" rel="stylesheet">
+    <style>
+        .add-availability{
+            color:teal;
+            font-weight:bold;
+            margin:4px;
+            margin-top:10px;
+        }
+
+        .control-label{
+          color:teal ;
+          font-weight:bold;
+        }
+
+        .time-slots-list
+        {
+            color:teal;
+           
+        }
+
+        .time-slots-list-item {
+            color: grey;
+        }
+
+        .slot-btn
+        {
+            color:white;
+            background-color:teal;
+            font-weight:bold;
+            float:right;
+            margin-right:4px;
+        }
+        .slot-btn:hover{
+            border:2px solid teal;
+            color:teal;
+        }
+        .line{
+            background-color:black;
+        }
+       
+    </style>
+</head>
+<body>
+    
+    
+    <div class="add-availability">
+        <h3>Add Availability</h3>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="Availability">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="AvailabilityStartDatetime" class="control-label">Start Date and Time :</label>
+                    <input asp-for="AvailabilityStartDatetime" class="form-control" />
+                    <span asp-validation-for="AvailabilityStartDatetime" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AvailabilityEndDatetime" class="control-label">End Date and Time</label>
+                    <input asp-for="AvailabilityEndDatetime" class="form-control" />
+                    <span asp-validation-for="AvailabilityEndDatetime" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="AppointmentCount" class="control-label">Appointment Count :</label>
+                    <input asp-for="AppointmentCount" class="form-control" />
+                    <span asp-validation-for="AppointmentCount" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Add" class="btn btn-primary" style="background-color:teal" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <hr class="line"/>
+    <div class="add-availability">
+        <h3>Your Availabilities : </h3>
+        <div id="availabilityResults">
+        </div>
+    </div>
+    
+    <hr class="line" />
+    @section Scripts {
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+    }
+
+    <script>
+
+        function displayAvailability(data,email) {
+            availabilityResults.innerHTML = "";
+            let f = 0;
+            data.forEach(day => {
+                f = 1;
+                const dateHeader = document.createElement('h5');
+                dateHeader.textContent = `Date: ${day.Date}`;
+                availabilityResults.appendChild(dateHeader);
+                dateHeader.classList.add('time-slots-list');
+
+                const timeSlotsList = document.createElement('ul');
+                timeSlotsList.classList.add('time-slots-list-item');
+                availabilityResults.appendChild(timeSlotsList);
+
+                day.TimeSlots.$values.forEach(slot => {
+                    const timeSlot = document.createElement('li');
+                    console.log(slot);
+                    timeSlot.textContent = `${slot.StartTime} - ${slot.EndTime}  -  Appointment Count : ${slot.AppointmentCount}`;
+                    timeSlotsList.appendChild(timeSlot);
+
+                    const editButton = document.createElement('button');
+                    editButton.textContent = "Edit";
+                    editButton.dataset.availabilityId = `${slot.AvailabilityId}`;
+
+                    editButton.addEventListener('click', function () {
+                        
+                        const availabilityId = this.dataset.availabilityId;
+                        const url = `/Doctor/UpdateAvailability?availabilityId=${availabilityId}`;
+                        window.location.href = url;
+                    });
+
+                    const deleteButton = document.createElement('button');
+                    deleteButton.textContent = "Delete";
+                    deleteButton.dataset.availabilityId = `${slot.AvailabilityId}`;
+    
+                    editButton.classList.add('slot-btn','btn','edit');
+                    deleteButton.classList.add('slot-btn','btn','delete');
+                    timeSlot.appendChild(editButton);
+                    timeSlot.appendChild(deleteButton);
+                    timeSlotsList.appendChild(timeSlot);
+
+                    const hr = document.createElement('hr');
+                    hr.classList.add('line');
+                    timeSlotsList.appendChild(hr);
+
+                });
+            });
+            if (!f)
+                availabilityResults.innerHTML = "Nothing to show..";
+
+        }
+
+        $(document).ready(function () {
+           
+            $.ajax({
+                url: '/Auth/GetLoggedInUser',
+                type: 'GET',
+                success: function (data) {
+
+                    const loggedUser = JSON.parse(data);
+                    const username = loggedUser.UserName;
+                   // console.log(userRole);
+
+                    $.ajax({
+                        url: '/Doctor/GetDoctorAvailability',
+
+                        type: 'GET',
+                        data: {
+                            email: username,
+                        },
+                        success: function (response) {
+
+                            var availability = JSON.parse(response);
+                            console.log(availability);
+                            displayAvailability(availability, username);
+
+                        },
+                        error: function (xhr, textStatus, errorThrown) {
+                            console.error('Error occurred while retrieving availability:', errorThrown);
+                        }
+                    });
+                 
+                },
+                error: function (xhr, textStatus, errorThrown) {
+                    console.error('Error occurred while retrieving logged-in user:', errorThrown);
+                }
+            });
+
+             $(document).on("click", ".delete", function () {
+                const availabilityId = $(this).data("availability-id");
+
+
+                $.ajax({  
+                    url: '/Doctor/DeleteAvailability',
+                    type: 'DELETE',
+                    data: {
+                        availabilityId : availabilityId
+                    },
+                    success: function () {
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Availability Deleted!',
+                            html: ' Availability slot  has been deleted successfully.',
+                            showCloseButton: true,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload(true);
+                            } else if (result.dismiss === Swal.DismissReason.close) {
+                                location.reload(true);
+                            }
+                        });;
+
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error booking appointment:', error);
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while deleting the availability. Please try again later.',
+                            showCloseButton: true,
+                        });
+                    }
+                });
+            });
+
+
+           
+           
+        });
+    </script>
+    
+</body>
+</html>
+

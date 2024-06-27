@@ -1,0 +1,118 @@
+﻿@model Services.AuthModels.LoginModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+<div>
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Scheduling</title>
+    <link rel="icon" type="image/jfif" href="~/icon.jfif" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shCjCk5z8O3bqFeh12Xv1t4+1p4flfl5Gw5+q" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="@Url.Content("~/css/login-style.css")" rel="stylesheet">
+    <style>
+        .container {
+            display: flex;
+            overflow: hidden;
+            justify-content: flex-end;
+            align-items: center;
+            height: 100vh;
+            background-image: url('@Url.Content("~/Images/Login.jpg")');
+            background-size: cover;
+            background-position: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <main>
+        <div class="container">
+            <div class="screen">
+                <div class="screen__content">
+                    <form asp-action="Login" class="login">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="login__field form-group">
+                            <i asp-for="UsernameOrEmail" class="login__icon fas fa-user control-label"></i>
+                            <input type="text" asp-for="UsernameOrEmail" class="login__input form-control" placeholder="User name / Email">
+                            <span asp-validation-for="UsernameOrEmail" class="text-danger"></span>
+                        </div>
+                        <div class="login__field form-group">
+                            <i asp-for="Password" class="login__icon fas fa-lock control-label"></i>
+                            <input type="password" asp-for="Password" class="login__input form-control" placeholder="Password">
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                        <button class="button login__submit">
+                            <span class="button__text">Log In Now</span>
+                            <i class="button__icon fas fa-chevron-right"></i>
+                        </button>
+                        <div style="margin-top:8px;">
+                            <p>
+                                Don't have an Account?<br>
+                                <a href="/Auth/Register" style="color:teal">Register here.</a>
+                            </p>
+                            <p style="display:block"><a href="/Auth/ForgotPassword" style="color:teal">Forgot Password?</a></p>
+                        </div>
+                    </form>
+
+                </div>
+                <div class="screen__background">
+                    <span class="screen__background__shape screen__background__shape4"></span>
+                    <span class="screen__background__shape screen__background__shape3"></span>
+                    <span class="screen__background__shape screen__background__shape2"></span>
+                    <span class="screen__background__shape screen__background__shape1"></span>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div>
+            © 2024 [Company Name] |
+            <a href="#">About Us</a> |
+            <a href="#">Terms of Service</a> |
+            <a href="#">Privacy Policy</a>
+
+            <a href="#"><i class="fab fa-facebook-square"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(".alert").alert();
+        });
+    </script>
+</body>
+</html>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

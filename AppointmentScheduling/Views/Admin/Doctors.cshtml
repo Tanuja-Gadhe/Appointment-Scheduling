@@ -1,0 +1,167 @@
+﻿@model List<Services.ServiceModels.VerificationDTO>
+
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+    var flag = 0;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+   
+    <style>
+        main {
+            padding-left: 0px !important;
+            padding-right: 0px !important;
+        }
+
+        h2 {
+            color: teal;
+            padding-left: 10%;
+        }
+
+        .table {
+            margin: 20px auto;
+            width: 90%;
+            border-collapse: collapse;
+        }
+
+            .table th, .table td {
+                padding: 10px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+
+            .table th {
+                background-color: #f2f2f2;
+            }
+
+          
+            .table input[type="text"], .table button {
+                height: 38px;
+                margin: 0;
+            }
+
+        .image {
+            height: 100px;
+            width: 100px;
+            border-radius: 50%;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="cont">
+        <h2>Doctors</h2>
+        <hr />
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Serial Number</th>
+                    <th>Image</th>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Documents</th>
+                    <th>Specialization</th>
+                    <th>Degree</th>
+                    <th>Verify</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int i = 0; i < Model.Count(); i++)
+                {
+                    flag = 0;
+                    var user = Model.ElementAt(i);
+                    <tr>
+                        <td>@(i + 1)</td>
+                        <td><img class="image" src="@user.ImagePath" /></td>
+                        <td>@user.Username</td>
+                        <td>@user.Name</td>
+                        <td>@user.Email</td>
+                        <td>@user.Address</td>
+                        <td>
+                            <div class="document-buttons">
+                                <ol>
+                                    @if (!string.IsNullOrEmpty(user.MedicalLicense))
+                                    {
+                                        flag = 1;
+                                        <li> <a href="@user.MedicalLicense" target="_self">Medical License</a></li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(user.IdProof))
+                                    {
+                                        flag = 1;
+                                        <li> <a href="@user.IdProof" target="_self">ID Proof</a></li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(user.MedicalDegreeCertificate))
+                                    {
+                                        flag = 1;
+                                        <li> <a href="@user.MedicalDegreeCertificate" target="_self">Medical Degree Certificate</a></li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(user.PostgraduateMedicalDegreeCertificate))
+                                    {
+                                        flag = 1;
+                                        <li>  <a href="@user.PostgraduateMedicalDegreeCertificate" target="_self">Postgraduate Medical Degree Certificate</a></li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(user.SpecializationCertificate))
+                                    {
+                                        flag = 1;
+                                        <li> <a href="@user.SpecializationCertificate" target="_self">Specialization Certificate</a></li>
+                                    }
+                                    @if (flag == 0)
+                                    {
+                                        <em>Documents not uploaded.</em>
+                                    }
+                                </ol>
+                            </div>
+                          
+                        </td>
+                        <td>
+
+                            @if (!string.IsNullOrEmpty(user.Specialization))
+                            {
+                                <span>@user.Specialization</span>
+                            }
+                            else
+                            {
+                                <em>empty</em>
+                            }
+
+                        </td>
+                        <td>
+
+                            @if (!string.IsNullOrEmpty(user.Degree))
+                            {
+                                <span>@user.Degree</span>
+                            }
+                            else
+                            {
+                                <em>empty</em>
+                            }
+
+                        </td>
+                        <td>
+
+                            @if (!user.Verify)
+                            {
+                                <span class="badge badge-danger">Not Verified</span>
+                            }
+                            else
+                            {
+                                <span class="badge badge-success">Verified</span>
+                            }
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <script>
+       
+    </script>
+</body>
+</html>
+
+

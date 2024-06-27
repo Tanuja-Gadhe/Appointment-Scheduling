@@ -1,0 +1,160 @@
+.container {  display: grid;
+    grid-template-columns: 2.6fr 0.1fr 1.2fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 40px 5px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "greetings weekly-scedule weekly-scedule"
+      "weekly-reports weekly-scedule weekly-scedule"
+      "todays-appointments todays-appointments todays-appointments";
+  }
+  
+  .weekly-reports {  display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 0.4fr 2.6fr 0.1fr;
+    gap: 10px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      ". . ."
+      "total-appointments appointments-breakdown total-patients"
+      ". . .";
+    grid-area: weekly-reports;
+    width: 650px;
+    height: 250px;
+  }
+  
+  .appointments-breakdown {  display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "scheduled . ."
+      "cancelled . ."
+      "completed . .";
+    grid-area: appointments-breakdown;
+  }
+  
+  .scheduled { grid-area: scheduled; }
+  
+  .cancelled { grid-area: cancelled; }
+  
+  .completed { grid-area: completed; }
+  
+  .total-patients { grid-area: total-patients; }
+  
+  .total-appointments { grid-area: total-appointments; }
+  
+  .todays-appointments { grid-area: todays-appointments; }
+  
+  .weekly-scedule {  display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 10px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "weekly-availability-schedule weekly-availability-schedule weekly-availability-schedule"
+      "weekly-availability-schedule weekly-availability-schedule weekly-availability-schedule"
+      "todays-availability-breakdown todays-availability-breakdown todays-availability-breakdown";
+    grid-area: weekly-scedule;
+    width: 400px; /* 400px,700px*/
+    height: 700px;
+   
+  }
+  
+  .weekly-availability-schedule {  display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 10px 10px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "heading heading heading"
+      "monday tuesday wed"
+      "thurs fri sat";
+    grid-area: weekly-availability-schedule;
+  }
+  .heading { 
+    grid-area: heading;
+    align-items: center;
+ }
+  .monday { grid-area: monday; height:100px;width:120px;}
+  
+  .tuesday { grid-area: tuesday; height:100px;width:120px }
+  
+  .wed { grid-area: wed;  height:100px;width:120px}
+  
+  .thurs { grid-area: thurs; height:100px;width:120px }
+  
+  .fri { grid-area: fri;  height:100px;width:120px}
+  
+  .sat { grid-area: sat; height:100px;width:120px }
+  
+  .todays-availability-breakdown { grid-area: todays-availability-breakdown;width:400px; }
+  
+  .greetings {
+    grid-area: greetings;
+    width: 650px;
+    height: 250px;
+  }
+  
+  
+  .card {
+    
+    background-color: #ffffff;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    padding: 20px;
+    background-color: whitesmoke;
+    text-align: center;
+    color: teal;
+    height:100%;
+  }
+
+  .weekly-item
+  {
+    height:150px;
+    width:150px;
+    align-self:center;
+    border-radius: 50%;
+    margin-bottom:10px;
+  }
+  .appointments-breakdown-item
+  {
+    height:50px;
+    width:50px;
+    align-self:center;
+    border-radius: 50%;
+    margin-bottom:10px;
+  }
+
+  .inline-container {
+    display: flex;
+    align-items: center; 
+}
+
+
+.inline-container img {
+    margin-right: 2px;
+}
+
+table,tr{
+    border-bottom: 2px solid teal;
+    border-collapse: collapse;
+}
+th{
+    font-size: 13px;
+}
+h3{
+    color:teal
+}
+
+.view {
+    border: none;
+    background-color: rgba(255,255,255,0.0);
+    float: right;
+    padding-left: 40px;
+}
+
+.bi-eye-fill {
+    color: #007bff;
+}

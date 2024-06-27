@@ -1,0 +1,445 @@
+﻿@model List<Services.ServiceModels.ChatsDTO>
+@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Scheduling</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        
+        .cont {
+            display: flex;
+            height: 800px;
+            width:100%;
+        }
+
+        .sidebar {
+            width: 300px;
+            background-color: #f5f5f5;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .search-bar {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+            .search-bar input {
+                flex: 1;
+                padding: 8px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            }
+
+        .new-conversation {
+            margin-bottom: 20px;
+        }
+
+            .new-conversation button {
+                width: 100%;
+                padding: 10px;
+                background-color: teal;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+        .conversation-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+            .conversation-list li {
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+                cursor: pointer;
+            }
+
+                .conversation-list li:hover {
+                    background-color: #f1f1f1;
+                }
+
+        .new-chat-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+            .new-chat-list li {
+                padding: 10px;
+                border-bottom: 1px solid #ddd;
+                cursor: pointer;
+            }
+
+                .new-chat-list li:hover {
+                    background-color: #f1f1f1;
+                }
+
+
+        .chat-window {
+            flex: 1;
+           
+            padding: 20px;
+            background-color: #e9e9e9;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .message-container {
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            background-color: #fff;
+
+         
+        }
+        .temp{
+            display: flex;
+            flex-direction: column;
+            padding : 5px;
+            flex-grow: 1;
+        }
+        .message {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            width: auto;
+            max-width: 60%;
+            word-wrap: break-word;
+            border: 1px solid #ccc;
+            display: inline-block;
+        }
+
+        .sent {
+            background-color: #dcf8c6;
+            align-self: flex-end;
+        }
+
+        .received {
+            background-color: #e5e5ea;
+            align-self: flex-start;
+        }
+
+        .input-area {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            background-color: #f9f9f9; 
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+        }
+
+            .input-area input {
+                flex: 1;
+                padding: 12px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); 
+                transition: border-color 0.3s ease;
+            }
+
+                .input-area input:focus {
+                    border-color: teal; 
+                    outline: none;
+                }
+
+            .input-area button {
+                margin-left: 10px;
+                padding: 12px 20px; 
+                background-color: teal;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: background-color 0.3s ease, box-shadow 0.3s ease; 
+            }
+
+                .input-area button:hover {
+                    background-color: teal;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+                }
+
+                .input-area button:active {
+                    background-color: teal; 
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+                }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: teal;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-pic {
+            margin-right: 15px;
+        }
+
+            .profile-pic img {
+                border-radius: 50%;
+                width: 50px;
+                height: 50px;
+            }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            margin: 0;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="cont">
+        <div class="sidebar">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search...">
+            </div>
+            <div class="new-conversation">
+                <button class="newConversationBtn">Start New Conversation</button>
+            </div>
+           
+                @if (Model.Count > 0)
+                {
+                <ul class="conversation-list" id="conversationList">
+                        @foreach (var user in Model)
+                        {
+                            @if(TempData["Email"].ToString() == user.Email)
+                        {
+                            <li class="default-item" data-receiver-id="@user.Email" data-name ="@user.Name" data-image="@user.ImagePath">@user.Name</li>
+                        }
+                        else
+                        {
+                            <li data-receiver-id="@user.Email" data-name="@user.Name" data-image="@user.ImagePath">@user.Name</li>
+                        }
+                    }
+                </ul>
+                }
+                else
+                {
+                    <p>No chats.</p>
+                }
+
+
+        </div>
+        <div class="chat-window">
+            <div class="chat-header">
+                <div class="profile-pic" id="profileImg">
+                   
+                </div>
+                <div class="profile-info" id="profileInfo">
+                   
+                </div>
+            </div>
+            <div class="message-container">
+            <div class="history temp" >
+
+             
+            </div>
+            <div class="dynamic"></div>
+            </div>
+        </div>
+        <div class="newChats"></div>
+    </div>
+    <style>
+        main {
+            padding-right:0px !important;
+            padding-left:0px !important;
+            width: 100% !important;
+            padding-bottom: 0px !important;
+            min-height: 850px!important;
+            max-height: 100vh !important;
+            overflow-y: auto !important;
+        }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.7/signalr.min.js"></script>
+    <script>
+        function clearMessageInput() {
+            $('#messageInput').val('');
+        }
+        function renderMessages(messages, patient) {
+            const messagesContainer = document.querySelector('.history');
+            messagesContainer.innerHTML = "";
+            messages.forEach(message => {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                if (message.Sender === patient) {
+                    messageElement.classList.add('sent');
+                } else {
+                    messageElement.classList.add('received');
+                }
+                messageElement.textContent = `${message.Content}`;
+                messagesContainer.appendChild(messageElement);
+            });
+            // const div = document.createElement('div');
+            // div.classList.add("dynamic");
+            // messagesContainer.appendChild(div);
+        }
+
+        
+        $(document).ready(function () {
+            document.getElementById('searchInput').addEventListener('input', function () {
+                const searchQuery = this.value.toLowerCase();
+                const conversationItems = document.querySelectorAll('#conversationList li');
+
+                conversationItems.forEach(function (item) {
+                    const text = item.textContent.toLowerCase();
+                    if (text.includes(searchQuery)) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+            $('.newConversationBtn').click(function () {
+                $.ajax({
+                    url: "/Chat/NewConversation",
+                    type: "GET",
+                    success: function (response) {
+                        $('.newChats').innerHTML = "";
+                        $('.newChats').html(response);
+                        $('#newChats').modal('show');
+                        $('.new-chat-list li').click(function () {
+                            const recipient = $(this).data("receiver-id");
+                            const name = $(this).data("name");
+                      
+                            const url = `/Chat/Chats?name=${name}&email=${recipient}`;
+                            window.location.href = url;
+
+                        });
+
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+                });
+
+            });
+
+            $('.conversation-list li').click(function () {
+                const receiverId = $(this).data('receiver-id');
+                const doctorName = $(this).data('name');
+                const imagePath = $(this).data('image');
+                clearMessageInput();
+
+                profileImg.innerHTML = "";
+                const image = document.createElement('img');
+                image.src = imagePath;
+               profileImg.appendChild(image);
+
+                profileInfo.innerHTML = "";
+                const name = document.createElement('h2');
+                name.textContent = doctorName;
+                name.classList.add("profile-name");
+                profileInfo.appendChild(name);
+               
+                $.ajax({
+                    url: "/Auth/GetLoggedInUser",
+                    type: "GET",
+                    success: function (response) {
+                        const user = JSON.parse(response);
+                        if (user.Role == "patient") {
+                            const patientId = user.UserName;
+                            $.ajax({
+                                url: "/Chat/GetHistoryChats",
+                                type: "GET",
+                                data: { patientId: patientId, doctorId: receiverId },
+                                success: function (response) {
+                                    const chats = JSON.parse(response);
+                                    console.log(chats);
+                                    renderMessages(chats.$values, patientId);
+
+                                },
+                                error: function (xhr, status, error) {
+
+                                }
+                            });
+                            $.ajax({
+                                url: '/Chat/Chat',
+                                type: 'POST',
+                                data: { patient: patientId, doctor: receiverId },
+                                success: function (response) {
+                                    $('.dynamic').innerHTML = "";
+                                    $('.dynamic').html(response);
+                                    console.log("heeeeeee");
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error loading chat:', error);
+                                }
+                            });
+                        }
+                        else {
+                            console.log("here");
+                            const doctorId = user.UserName;
+                            $.ajax({
+                                url: "/Chat/GetHistoryChats",
+                                type: "GET",
+                                data: { patientId: receiverId, doctorId: doctorId },
+                                success: function (response) {
+                                    const chats = JSON.parse(response);
+                                    console.log(chats);
+                                    renderMessages(chats.$values, doctorId);
+
+                                },
+                                error: function (xhr, status, error) {
+
+                                }
+                            });
+                            $.ajax({
+                                url: '/Chat/Chat',
+                                type: 'POST',
+                                data: { patient: receiverId, doctor: doctorId },
+                                success: function (response) {
+                                   $('.dynamic').innerHTML = "";
+                                    $('.dynamic').html(response);
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error loading chat:', error);
+                                }
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+
+                    }
+                    
+                });
+            });
+
+            const defaultItem = document.querySelector('.default-item');
+            if (defaultItem) {
+                console.log('Default item found, attempting to click'); // Debug log
+                defaultItem.click();
+            } else {
+                console.log('Default item not found'); // Debug log
+            }
+
+
+           
+        });
+
+       
+    </script>
+   
+
+
+</body>
+</html>

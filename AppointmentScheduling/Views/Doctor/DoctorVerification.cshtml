@@ -1,0 +1,163 @@
+﻿@model Services.ServiceModels.DoctorVerificationModel
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Appointment Scheduling</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 500px; /* Reduced width */
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #008080; /* Teal color */
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        p {
+            color: #555;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* Form styles */
+        form {
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: #008080; /* Teal color */
+            margin-bottom: 5px;
+        }
+      
+
+        /* Style the icon as a replacement for the button */
+        .file-input-icon {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #008080;
+            color: #fff;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .file-input-icon:hover {
+                background-color: #005959;
+            }
+      
+
+        .text-danger {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 3px;
+            font-weight: bold;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #008080; /* Teal color */
+            border: none;
+            color: #fff;
+            cursor: pointer;
+        }
+
+            .btn-primary:hover {
+                background-color: #005959;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, @Model.UserName!</h1>
+        <p>Please complete your verification process by uploading the required documents.</p>
+      <form asp-action="DoctorVerification" method="post" enctype="multipart/form-data">
+            <input asp-for="UserName" type="text" id="UserName" hidden />
+    <div class="form-group">
+        <label for="MedicalLicense">
+                    <i class="fas fa-file-medical file-input-icon"></i>
+            Medical License:
+           
+        </label>
+        <input asp-for="MedicalLicense" type="file" id="MedicalLicense" class="form-control-file" />
+                <div><span asp-validation-for="MedicalLicense" class="text-danger"></span></div>
+    </div>
+    <div class="form-group">
+        <label for="IdProof">
+                    <i class="fas fa-id-card file-input-icon"></i>
+            ID Proof:
+          
+        </label>
+        <input asp-for="IdProof" type="file" id="IdProof" class="form-control-file" />
+                <div><span asp-validation-for="IdProof" class="text-danger"></span></div>
+    </div>
+    <div class="form-group">
+        <label for="MedicalDegreeCertificate">
+                    <i class="fas fa-graduation-cap file-input-icon"></i>
+            Medical Degree Certificate:
+            
+        </label>
+        <input asp-for="MedicalDegreeCertificate" type="file" id="MedicalDegreeCertificate" class="form-control-file" />
+                <div><span asp-validation-for="MedicalDegreeCertificate" class="text-danger"></span></div>
+    </div>
+    <div class="form-group">
+        <label for="PostgraduateMedicalDegreeCertificate">
+                    <i class="fas fa-user-graduate file-input-icon"></i>
+            Postgraduate Medical Degree Certificate (optional):
+           
+        </label>
+        <input asp-for="PostgraduateMedicalDegreeCertificate" type="file" id="PostgraduateMedicalDegreeCertificate" class="form-control-file" />
+                <div> <span asp-validation-for="PostgraduateMedicalDegreeCertificate" class="text-danger"></span></div>
+    </div>
+    <div class="form-group">
+        <label for="SpecializationCertificate">
+                    <i class="fas fa-user-md file-input-icon"></i>
+            Specialization Certificate (optional):
+            
+        </label>
+        <input asp-for="SpecializationCertificate" type="file" id="SpecializationCertificate" class="form-control-file" />
+                <div><span asp-validation-for="SpecializationCertificate" class="text-danger"></span></div>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Submit Documents" class="btn btn-primary">
+    </div>
+</form>
+    </div>
+
+</body>
+</html>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
